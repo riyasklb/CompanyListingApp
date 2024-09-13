@@ -18,12 +18,13 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Job Portal App',
-      initialRoute: '/companylistpage',
-      getPages: [
-        GetPage(name: '/splash', page: () => SplashScreen()),
-        GetPage(name: '/signin', page: () => SignInScreen()),
-        GetPage(name: '/companylistpage', page: () => CompanyListPage()),
-      ],
+      home: SplashScreen(),
+      // initialRoute: '/companylistpage',
+      // getPages: [
+      //   GetPage(name: '/splash', page: () => SplashScreen()),
+      //   GetPage(name: '/signin', page: () => SignInScreen()),
+      //   GetPage(name: '/companylistpage', page: () => CompanyListPage()),
+      // ],
     );
   }
 }

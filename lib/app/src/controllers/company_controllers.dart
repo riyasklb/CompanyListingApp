@@ -11,7 +11,17 @@ class CompanyController extends GetxController {
     fetchCompanies();
     super.onInit();
   }
+// Future<void> _logout() async {
+//   await _auth.signOut();
+//   await _googleSignIn.signOut();
 
+//   // Clear user credentials from SharedPreferences
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   await prefs.clear();
+
+//   // Navigate back to the Sign-In screen
+//   Get.offAll(SignInScreen());
+// }
   // Fetch data from API
   void fetchCompanies() async {
     try {
