@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "963130699609",
+    "project_id": "joistic-task",
+    "storage_bucket": "joistic-task.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:963130699609:android:46f0131c552a9d48376648",
+        "android_client_info": {
+          "package_name": "com.example.joistictask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrvBUqQDFIWEj83fTE0fOx5Iq1sGKt3TQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
