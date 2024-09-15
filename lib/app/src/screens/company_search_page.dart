@@ -77,17 +77,15 @@ class CompanySearchDelegate extends SearchDelegate {
                       color: Colors.grey[100],
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(2.0.w),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(36.0.r),
-                        child: Image.network(
-                          company.thumbnailUrl, // Company image URL
-                          width: 50.w,
-                          height: 50.h,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+  padding: EdgeInsets.all(2.0.w),
+  child: CircleAvatar(
+    radius: 25.r, // Use half the width/height to get the same size circle
+    backgroundImage: NetworkImage(
+      company.thumbnailUrl, // Company image URL
+    ),
+  ),
+),
+
                   ),
                   title: Text(
                     title, // Capitalized company name
@@ -161,17 +159,15 @@ class CompanySearchDelegate extends SearchDelegate {
                       color: Colors.grey[100],
                     ),
                     child: Padding(
-                      padding: EdgeInsets.all(2.0.w),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(36.0.r),
-                        child: Image.network(
-                          company.thumbnailUrl, // Company image URL
-                          width: 50.w,
-                          height: 50.h,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+  padding: EdgeInsets.all(2.0.w),
+  child: CircleAvatar(
+    radius: 25.r, // Use half the width/height to get the same size circle
+    backgroundImage: NetworkImage(
+      company.thumbnailUrl, // Company image URL
+    ),
+  ),
+),
+
                   ),
                   title: Text(
                     title, // Capitalized company name

@@ -6,7 +6,8 @@ import 'package:joistictask/app/src/screens/company_details_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:joistictask/app/src/screens/company_search_page.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart'; // Import Skeletonizer
 
 class CompanyListPage extends StatelessWidget {
   final CompanyController companyController = Get.put(CompanyController());
@@ -35,8 +36,8 @@ class CompanyListPage extends StatelessWidget {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          const Color.fromARGB(233, 255, 255, 255), // Set the background color to white
+                      backgroundColor: const Color.fromARGB(233, 255, 255,
+                          255), // Set the background color to white
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                             13.r), // Rounded corners for rectangle
@@ -54,7 +55,7 @@ class CompanyListPage extends StatelessWidget {
                       color: Colors.grey[800], // Icon color set to black
                       size: 24.w, // Responsive icon size
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -77,8 +78,32 @@ class CompanyListPage extends StatelessWidget {
               init: companyController,
               builder: (controller) {
                 if (controller.isLoading) {
-                  return Center(child: CircularProgressIndicator());
+                  return Expanded(
+                    child: Skeletonizer(
+                      enabled: true,
+                      child: ListView.builder(
+                        itemCount: 6,
+                        padding: const EdgeInsets.all(16),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h), // Responsive padding
+                            child: Container(
+                              height: 80.h, // Skeleton height
+                              width: double.infinity, // Full width
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300], // Placeholder color
+                                borderRadius: BorderRadius.circular(
+                                    15.r), // Rounded corners
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
                 }
+
                 return Expanded(
                   child: ListView.builder(
                     itemCount: controller.companyList.length,
@@ -118,16 +143,15 @@ class CompanyListPage extends StatelessWidget {
                                 color: Colors.grey[100],
                               ),
                               child: Padding(
-                                padding: EdgeInsets.all(2.0.w),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(
-                                      36.0.r), // Responsive clipping
-                                  child: Image.network(
-                                    company.thumbnailUrl,
-                                    width: 50.w,
-                                    height: 50.h,
-                                    fit: BoxFit.cover,
-                                  ),
+                                padding:
+                                    EdgeInsets.all(2.0.w), // Responsive padding
+                                child: CircleAvatar(
+                                  radius: 25
+                                      .r, // Adjust radius for responsive design
+                                  backgroundImage:
+                                      NetworkImage(company.thumbnailUrl),
+                                  backgroundColor: Colors.grey[
+                                      200], // Optional: background color while loading
                                 ),
                               ),
                             ),
@@ -194,18 +218,7 @@ class CompanyListPage extends StatelessWidget {
                   -114.w, // Using .w for responsive width values
                   -380.h, // Using .h for responsive height values
                 ),
-                child:
-                    //  Container(
-                    //   width: 130.w,  // Responsive width
-                    //   height: 130.h, // Responsive height
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.white,
-                    //     borderRadius: BorderRadius.circular(100.r), // Responsive radius
-                    //   ),
-                    //   child:
-                    //  Container(
-                    //  child:
-                    CircleAvatar(
+                child: CircleAvatar(
                   radius: 70.r,
                   backgroundColor: Colors.white,
                   child: CircleAvatar(
@@ -213,13 +226,6 @@ class CompanyListPage extends StatelessWidget {
                     radius: 55.r, // Responsive radius
                   ),
                 ),
-                // width: 109.w,  // Responsive width
-                // height: 109.h, // Responsive height
-                // margin: EdgeInsets.all(8.w), // Responsive margin
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(100.r), // Responsive radius
-                // ),
-                //    ),
               ),
             ),
             CompanyDetailPage(
@@ -239,18 +245,3 @@ class CompanyListPage extends StatelessWidget {
     );
   }
 }
-// Get.bottomSheet(
-//   CompanyDetailPage(
-//     companyName: company.title,
-//     companyDescription: 'Dummy description for ${company.title}',
-//     companyImageUrl: company.thumbnailUrl,
-//     hasApplied: company.applied,
-//     onApply: () {
-//       companyController.applyForJob(company.id);
-//       Get.back();
-//       Get.snackbar('Success', 'Job Applied Successfully');
-//     },
-//   ),
-//   //backgroundColor: Colors.white,
-//  // isScrollControlled: true,
-// );
