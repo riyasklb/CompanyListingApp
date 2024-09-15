@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-List<GetJobModel> getJobModelFromJson(String str) => List<GetJobModel>.from(json.decode(str).map((x) => GetJobModel.fromJson(x)));
+List<GetJobModel> getJobModelFromJson(String str) => List<GetJobModel>.from(
+    json.decode(str).map((x) => GetJobModel.fromJson(x)));
 
-String getJobModelToJson(List<GetJobModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+String getJobModelToJson(List<GetJobModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class GetJobModel {
   int albumId;

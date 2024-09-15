@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:joistictask/app/src/controllers/company_controllers.dart';
-import 'package:joistictask/app/src/model/get_job_model.dart';
-import 'package:joistictask/app/src/screens/company_details_page.dart';
+import 'package:joistictask/controllers/company_controllers.dart';
+import 'package:joistictask/models/get_job_model.dart';
+import 'package:joistictask/views/company_details_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:joistictask/app/src/screens/company_search_page.dart';
+import 'package:joistictask/views/company_search_page.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:skeletonizer/skeletonizer.dart'; // Import Skeletonizer
+import 'package:skeletonizer/skeletonizer.dart';
 
 class CompanyListPage extends StatelessWidget {
   final CompanyController companyController = Get.put(CompanyController());
@@ -17,32 +17,26 @@ class CompanyListPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: 16.w), // Use ScreenUtil for padding
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                  top: 50.h, bottom: 10.h), // Responsive top padding
+              padding: EdgeInsets.only(top: 50.h, bottom: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
                     icon: Icon(Icons.menu, color: Colors.black),
-                    onPressed: () {
-                      // Handle menu action
-                    },
-                    iconSize: 24.w, // Responsive icon size
+                    onPressed: () {},
+                    iconSize: 24.w,
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(233, 255, 255,
-                          255), // Set the background color to white
+                      backgroundColor: const Color.fromARGB(233, 255, 255, 255),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            13.r), // Rounded corners for rectangle
+                        borderRadius: BorderRadius.circular(13.r),
                       ),
-                      elevation: 0.5, // Add some elevation
+                      elevation: 0.5,
                     ),
                     onPressed: () {
                       showSearch(
@@ -51,23 +45,22 @@ class CompanyListPage extends StatelessWidget {
                       );
                     },
                     child: Icon(
-                      Icons.search,
-                      color: Colors.grey[800], // Icon color set to black
-                      size: 24.w, // Responsive icon size
+                      Icons.search_outlined,
+                      color: Colors.grey[800],
+                      size: 24.w,
                     ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 20.w, vertical: 20.h), // Responsive padding
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Find your Dream\nJob today',
                   style: GoogleFonts.montserrat(
-                    fontSize: 28.sp, // Responsive font size
+                    fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -86,15 +79,13 @@ class CompanyListPage extends StatelessWidget {
                         padding: const EdgeInsets.all(16),
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.h), // Responsive padding
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
                             child: Container(
-                              height: 80.h, // Skeleton height
-                              width: double.infinity, // Full width
+                              height: 80.h,
+                              width: double.infinity,
                               decoration: BoxDecoration(
-                                color: Colors.grey[300], // Placeholder color
-                                borderRadius: BorderRadius.circular(
-                                    15.r), // Rounded corners
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(15.r),
                               ),
                             ),
                           );
@@ -118,40 +109,33 @@ class CompanyListPage extends StatelessWidget {
                           ) ??
                           company.title;
                       return Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 8.h), // Responsive padding
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(
-                                15.r), // Responsive radius
+                            borderRadius: BorderRadius.circular(15.r),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.2),
-                                blurRadius: 8.r, // Responsive blur radius
+                                blurRadius: 8.r,
                                 offset: Offset(0, 4),
                               ),
                             ],
                           ),
                           child: ListTile(
-                            contentPadding:
-                                EdgeInsets.all(16.w), // Responsive padding
+                            contentPadding: EdgeInsets.all(16.w),
                             leading: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    36.r), // Responsive border radius
+                                borderRadius: BorderRadius.circular(36.r),
                                 color: Colors.grey[100],
                               ),
                               child: Padding(
-                                padding:
-                                    EdgeInsets.all(2.0.w), // Responsive padding
+                                padding: EdgeInsets.all(2.0.w),
                                 child: CircleAvatar(
-                                  radius: 25
-                                      .r, // Adjust radius for responsive design
+                                  radius: 25.r,
                                   backgroundImage:
                                       NetworkImage(company.thumbnailUrl),
-                                  backgroundColor: Colors.grey[
-                                      200], // Optional: background color while loading
+                                  backgroundColor: Colors.grey[200],
                                 ),
                               ),
                             ),
@@ -159,13 +143,13 @@ class CompanyListPage extends StatelessWidget {
                               title,
                               style: GoogleFonts.montserrat(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16.sp, // Responsive font size
+                                fontSize: 16.sp,
                               ),
                             ),
                             subtitle: Text(
                               description,
                               style: GoogleFonts.montserrat(
-                                fontSize: 12.sp, // Responsive font size
+                                fontSize: 12.sp,
                                 color: Colors.grey[500],
                                 fontWeight: FontWeight.w500,
                               ),
@@ -198,7 +182,6 @@ class CompanyListPage extends StatelessWidget {
     );
   }
 
-  // Show company details as bottom sheet
   void _showCompanyDetail(BuildContext context, GetJobModel company) {
     showModalBottomSheet(
       context: context,
@@ -215,15 +198,15 @@ class CompanyListPage extends StatelessWidget {
             Container(
               child: Transform.translate(
                 offset: Offset(
-                  -114.w, // Using .w for responsive width values
-                  -380.h, // Using .h for responsive height values
+                  -114.w,
+                  -380.h,
                 ),
                 child: CircleAvatar(
                   radius: 70.r,
                   backgroundColor: Colors.white,
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(company.thumbnailUrl),
-                    radius: 55.r, // Responsive radius
+                    radius: 55.r,
                   ),
                 ),
               ),
