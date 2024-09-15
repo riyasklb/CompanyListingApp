@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:joistictask/app/src/controllers/company_controllers.dart';
+import 'package:joistictask/app/src/model/get_job_model.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:joistictask/app/src/screens/company_details_page.dart';
 
-class CompanySearch extends SearchDelegate {
+class CompanySearchDelegate extends SearchDelegate {
   final CompanyController companyController;
 
-  CompanySearch(this.companyController);
+  CompanySearchDelegate(this.companyController);
+
+  // Helper function to capitalize the first letter of a string
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -12,7 +23,7 @@ class CompanySearch extends SearchDelegate {
       IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
-          query = '';
+          query = ''; // Clear the search query
         },
       ),
     ];
@@ -23,33 +34,90 @@ class CompanySearch extends SearchDelegate {
     return IconButton(
       icon: Icon(Icons.arrow_back),
       onPressed: () {
-        close(context, null);
+        close(context, null); // Close the search
       },
     );
   }
 
   @override
   Widget buildResults(BuildContext context) {
-    var searchResults = companyController.companyList
-        .where((company) => company['title']
-            .toString()
-            .toLowerCase()
-            .contains(query.toLowerCase()))
+    final searchResults = companyController.companyList
+        .where((company) =>
+            company.title.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
       itemCount: searchResults.length,
       itemBuilder: (context, index) {
         var company = searchResults[index];
-        String title = company['title'].toString().split(" ").take(2).join(" ");
-        String description = company['title'].toString().split(" ").take(5).join(" ");
+        String title = capitalizeFirstLetter(company.title.split(" ").take(2).join(" "));
+        String description = capitalizeFirstLetter(company.title.split(" ").take(5).join(" "));
 
-        return ListTile(
-          leading: Image.network(company['thumbnailUrl'], width: 50, height: 50),
-          title: Text(title),
-          subtitle: Text(description),
-          trailing: Icon(Icons.circle, color: Colors.purple),
-          onTap: () => companyController.fetchCompanies(), // Show bottom sheet here
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: GetBuilder<CompanyController>(
+            builder: (_) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      blurRadius: 8.r,
+                      offset: Offset(0, 4.h), // Shadow position
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16.w),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(36.r),
+                      color: Colors.grey[100],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(2.0.w),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36.0.r),
+                        child: Image.network(
+                          company.thumbnailUrl, // Company image URL
+                          width: 50.w,
+                          height: 50.h,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    title, // Capitalized company name
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  subtitle: Text(
+                    description, // Capitalized job description
+                    style: GoogleFonts.montserrat(
+                      fontSize: 12.sp,
+                      color: Colors.grey[500],
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: Icon(
+                    Icons.circle,
+                    color: company.applied ? Colors.green : Colors.purple,
+                  ),
+                  onTap: () {
+                    close(context, null); // Close search and navigate
+                    _showCompanyDetail(context, company);
+                  },
+                ),
+              );
+            }
+          ),
         );
       },
     );
@@ -57,6 +125,137 @@ class CompanySearch extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Container();
+    final suggestions = companyController.companyList
+        .where((company) =>
+            company.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return GetBuilder<CompanyController>(
+      builder: (_) {
+        return ListView.builder(
+          itemCount: suggestions.length,
+          itemBuilder: (context, index) {
+            var company = suggestions[index];
+            String title = capitalizeFirstLetter(company.title.split(" ").take(2).join(" "));
+            String description = capitalizeFirstLetter(company.title.split(" ").take(5).join(" "));
+        
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15.r),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      blurRadius: 8.r,
+                      offset: Offset(0, 4.h), // Shadow position
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16.w),
+                  leading: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(36.r),
+                      color: Colors.grey[100],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(2.0.w),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(36.0.r),
+                        child: Image.network(
+                          company.thumbnailUrl, // Company image URL
+                          width: 50.w,
+                          height: 50.h,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    title, // Capitalized company name
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  subtitle: Text(
+                    description, // Capitalized job description
+                    style: GoogleFonts.montserrat(
+                      fontSize: 12.sp,
+                      color: Colors.grey[500],
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: Icon(
+                    Icons.circle,
+                    color: company.applied ? Colors.green : Colors.purple,
+                  ),
+                  onTap: () {
+                    query = title; // Set the selected company title as the query
+                    _showCompanyDetail(context, company);
+                  },
+                ),
+              ),
+            );
+          },
+        );
+      }
+    );
+  }
+
+  // Method to navigate to the company detail page
+  void _showCompanyDetail(BuildContext context, GetJobModel company) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 600.h,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15.r),
+              topRight: Radius.circular(15.r),
+            ),
+          ),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                child: Transform.translate(
+                  offset: Offset(
+                    -114.w, // Responsive offset
+                    -380.h, // Responsive offset
+                  ),
+                  child: CircleAvatar(
+                    radius: 70.r,
+                    backgroundColor: Colors.white,
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(company.thumbnailUrl),
+                      radius: 55.r, // Responsive radius
+                    ),
+                  ),
+                ),
+              ),
+              CompanyDetailPage(
+                companyName: company.title,
+                companyDescription: 'Dummy description for ${company.title}',
+                companyImageUrl: company.thumbnailUrl,
+                hasApplied: company.applied,
+                onApply: () {
+                  companyController.applyForJob(company.id);
+                  Get.back();
+                  Get.snackbar('Success', 'Job Applied Successfully');
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:joistictask/app/src/controllers/company_controllers.dart';
+import 'package:joistictask/app/src/model/get_job_model.dart';
+import 'package:joistictask/app/src/screens/company_details_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:joistictask/app/src/screens/company_search_page.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; // Import ScreenUtil
 
 class CompanyListPage extends StatelessWidget {
   final CompanyController companyController = Get.put(CompanyController());
@@ -9,75 +14,243 @@ class CompanyListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Company List'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              showSearch(context: context, delegate: CompanySearch(companyController));
-            },
-          ),
-        ],
-      ),
-      body: Obx(() {
-        if (companyController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        return ListView.builder(
-          itemCount: companyController.companyList.length,
-          itemBuilder: (context, index) {
-            var company = companyController.companyList[index];
-            String title = company['title'].toString().split(" ").take(2).join(" "); // Restrict to 2 words
-            String description = company['title'].toString().split(" ").take(5).join(" "); // Short description
-
-            return ListTile(
-              leading: Image.network(company['thumbnailUrl'], width: 50, height: 50),
-              title: Text(title),
-              subtitle: Text(description),
-              trailing: Icon(Icons.circle, color: Colors.purple),
-              onTap: () => _showCompanyDetail(context, company),
-            );
-          },
-        );
-      }),
-    );
-  }
-
-  // Bottom sheet to show company details
-  void _showCompanyDetail(BuildContext context, var company) {
-    Get.bottomSheet(
-      Container(
-        padding: EdgeInsets.all(16.0),
-        height: 300,
+      backgroundColor: Colors.grey[100],
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: 16.w), // Use ScreenUtil for padding
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(company['thumbnailUrl'], width: 100, height: 100),
-            SizedBox(height: 10),
-            Text(
-              company['title'],
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: 50.h, bottom: 10.h), // Responsive top padding
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.menu, color: Colors.black),
+                    onPressed: () {
+                      // Handle menu action
+                    },
+                    iconSize: 24.w, // Responsive icon size
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          const Color.fromARGB(233, 255, 255, 255), // Set the background color to white
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            13.r), // Rounded corners for rectangle
+                      ),
+                      elevation: 0.5, // Add some elevation
+                    ),
+                    onPressed: () {
+                      showSearch(
+                        context: context,
+                        delegate: CompanySearchDelegate(companyController),
+                      );
+                    },
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.grey[800], // Icon color set to black
+                      size: 24.w, // Responsive icon size
+                    ),
+                  )
+                ],
+              ),
             ),
-            SizedBox(height: 10),
-            Text(
-              'Company description goes here. This is dummy data.',
-              style: TextStyle(fontSize: 16),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: 20.w, vertical: 20.h), // Responsive padding
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Find your Dream\nJob today',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 28.sp, // Responsive font size
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Get.back(); // Close bottom sheet
-                Get.snackbar('Job Application', 'Job Applied Successfully');
+            GetBuilder<CompanyController>(
+              init: companyController,
+              builder: (controller) {
+                if (controller.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: controller.companyList.length,
+                    itemBuilder: (context, index) {
+                      var company = controller.companyList[index];
+                      String title = toBeginningOfSentenceCase(
+                            company.title.split(" ").take(2).join(" "),
+                          ) ??
+                          company.title;
+                      String description = toBeginningOfSentenceCase(
+                            company.title.split(" ").take(5).join(" "),
+                          ) ??
+                          company.title;
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 8.h), // Responsive padding
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(
+                                15.r), // Responsive radius
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 8.r, // Responsive blur radius
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding:
+                                EdgeInsets.all(16.w), // Responsive padding
+                            leading: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    36.r), // Responsive border radius
+                                color: Colors.grey[100],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(2.0.w),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      36.0.r), // Responsive clipping
+                                  child: Image.network(
+                                    company.thumbnailUrl,
+                                    width: 50.w,
+                                    height: 50.h,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              title,
+                              style: GoogleFonts.montserrat(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.sp, // Responsive font size
+                              ),
+                            ),
+                            subtitle: Text(
+                              description,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 12.sp, // Responsive font size
+                                color: Colors.grey[500],
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: GestureDetector(
+                              onTap: () => _showCompanyDetail(context, company),
+                              child: CircleAvatar(
+                                backgroundColor: company.applied
+                                    ? Colors.green
+                                    : Colors.blue,
+                                child: Icon(
+                                  company.applied ? Icons.check : Icons.add,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
               },
-              child: Text('Apply Now'),
             ),
           ],
         ),
       ),
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
+    );
+  }
+
+  // Show company details as bottom sheet
+  void _showCompanyDetail(BuildContext context, GetJobModel company) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 600.h,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.r),
+                  topRight: Radius.circular(15.r))),
+          child: Stack(alignment: Alignment.bottomCenter, children: [
+            Container(
+              child: Transform.translate(
+                offset: Offset(
+                  -114.w, // Using .w for responsive width values
+                  -380.h, // Using .h for responsive height values
+                ),
+                child:
+                    //  Container(
+                    //   width: 130.w,  // Responsive width
+                    //   height: 130.h, // Responsive height
+                    //   decoration: BoxDecoration(
+                    //     color: Colors.white,
+                    //     borderRadius: BorderRadius.circular(100.r), // Responsive radius
+                    //   ),
+                    //   child:
+                    //  Container(
+                    //  child:
+                    CircleAvatar(
+                  radius: 70.r,
+                  backgroundColor: Colors.white,
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(company.thumbnailUrl),
+                    radius: 55.r, // Responsive radius
+                  ),
+                ),
+                // width: 109.w,  // Responsive width
+                // height: 109.h, // Responsive height
+                // margin: EdgeInsets.all(8.w), // Responsive margin
+                // decoration: BoxDecoration(
+                //   borderRadius: BorderRadius.circular(100.r), // Responsive radius
+                // ),
+                //    ),
+              ),
+            ),
+            CompanyDetailPage(
+              companyName: company.title,
+              companyDescription: 'Dummy description for ${company.title}',
+              companyImageUrl: company.thumbnailUrl,
+              hasApplied: company.applied,
+              onApply: () {
+                companyController.applyForJob(company.id);
+                Get.back();
+                Get.snackbar('Success', 'Job Applied Successfully');
+              },
+            ),
+          ]),
+        );
+      },
     );
   }
 }
+// Get.bottomSheet(
+//   CompanyDetailPage(
+//     companyName: company.title,
+//     companyDescription: 'Dummy description for ${company.title}',
+//     companyImageUrl: company.thumbnailUrl,
+//     hasApplied: company.applied,
+//     onApply: () {
+//       companyController.applyForJob(company.id);
+//       Get.back();
+//       Get.snackbar('Success', 'Job Applied Successfully');
+//     },
+//   ),
+//   //backgroundColor: Colors.white,
+//  // isScrollControlled: true,
+// );

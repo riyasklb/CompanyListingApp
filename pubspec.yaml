@@ -41,7 +41,10 @@ dependencies:
   firebase_auth: ^5.1.4
   shared_preferences: ^2.3.2
   get: ^4.6.6
-
+  google_fonts: ^6.2.1
+  intl: ^0.17.0
+  flutter_screenutil: ^5.9.3
+  skeletonizer: ^1.4.2
 
 dev_dependencies:
   flutter_test:

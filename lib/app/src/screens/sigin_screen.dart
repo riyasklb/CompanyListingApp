@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'company_list_page.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -21,8 +22,7 @@ class SignInScreen extends StatelessWidget {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        // User canceled the sign-in
-        return null;
+        return null; // User canceled the sign-in
       }
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -31,7 +31,6 @@ class SignInScreen extends StatelessWidget {
         idToken: googleAuth.idToken,
       );
 
-      // Firebase sign-in
       final UserCredential userCredential = await _auth.signInWithCredential(credential);
       final User? user = userCredential.user;
 
@@ -49,24 +48,71 @@ class SignInScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
-      ),
-      body: Center(
-        child: ElevatedButton.icon(
-          icon: Icon(Icons.login, color: Colors.white),
-          label: Text('Sign In With Google'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+        title: Text(
+          'Sign In',
+          style: GoogleFonts.montserrat(
+            color: Colors.black,
+            fontSize: 24,
+            fontWeight: FontWeight.w500,
           ),
-          onPressed: () async {
-            final User? user = await _signInWithGoogle();
-            if (user != null) {
-              Get.snackbar('Success', 'Signed in as ${user.displayName}');
-              // Navigate to company listing page after successful login
-              Get.off(CompanyListPage());
-            }
-          },
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Simple welcome message with Google Fonts
+            Text(
+              'Welcome to MyApp!',
+              style: GoogleFonts.montserrat(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Sign in to continue and explore exciting features.',
+              style: GoogleFonts.montserrat(
+                fontSize: 16,
+                color: Colors.black54,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 30),
+            // Simple button for Google Sign-In
+            ElevatedButton.icon(
+              icon: Icon(Icons.login,),
+              label: Text(
+                'Sign In With Google',
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () async {
+                final User? user = await _signInWithGoogle();
+                if (user != null) {
+                  Get.snackbar('Success', 'Signed in as ${user.displayName}');
+                  Get.off(CompanyListPage());
+                }
+              },
+            ),
+            SizedBox(height: 20),
+            // Small instruction text
+            
+          ],
         ),
       ),
     );

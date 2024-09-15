@@ -1,43 +1,46 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:joistictask/app/src/model/get_job_model.dart';
+
 
 class CompanyController extends GetxController {
-  var isLoading = true.obs;
-  var companyList = [].obs;
+  var isLoading = true;
+  var companyList = <GetJobModel>[];
 
   @override
   void onInit() {
     fetchCompanies();
     super.onInit();
   }
-// Future<void> _logout() async {
-//   await _auth.signOut();
-//   await _googleSignIn.signOut();
 
-//   // Clear user credentials from SharedPreferences
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   await prefs.clear();
-
-//   // Navigate back to the Sign-In screen
-//   Get.offAll(SignInScreen());
-// }
-  // Fetch data from API
+  // Fetch data from API and store it in memory
   void fetchCompanies() async {
     try {
-      isLoading(true);
+      isLoading = true;
+      update(); // Notify GetBuilder that the loading state has changed
+
       final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1/photos'));
 
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);
-        companyList.value = data; // Store the fetched data in the observable list
+        var data = getJobModelFromJson(response.body);
+        companyList = data;
       } else {
         Get.snackbar('Error', 'Failed to fetch data');
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch data');
+      Get.snackbar('Error', 'Failed to fetch data: $e');
     } finally {
-      isLoading(false); // Stop loading when the API call is done
+      isLoading = false;
+      update(); // Notify GetBuilder that the loading state has changed
+    }
+  }
+
+  // Update applied status in memory only
+  void applyForJob(int id) {
+    var index = companyList.indexWhere((company) => company.id == id);
+    if (index != -1) {
+      companyList[index].applied = true;
+      update(); // Notify GetBuilder that the list has changed
     }
   }
 }
